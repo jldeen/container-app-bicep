@@ -14,7 +14,6 @@ To simplify the deployment experience, there are abstracted Azure Bicep files lo
 * [Azure Account](https://azure.microsoft.com/free/)
 * [Azure Container Apps Extension Enabled](https://docs.microsoft.com/en-us/azure/container-apps/get-started?tabs=bash#setup)
 
-
 ## Run gRPC Sample App 
 
 Starting from the root of this folder, please login to Azure 
@@ -62,7 +61,7 @@ If you would like to provide your own resource group name and location, run the 
 
 The deploy script will run and will create 4 resources in the resource group name you chose:
 
-* Conatiner App Environment
+* Container App Environment
 * Log Analytics Workspace
 * Container App (grpc-backend)
 * Container App (https-frontend)
