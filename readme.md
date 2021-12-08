@@ -2,11 +2,11 @@
 
 ## Objectives 
 
-* This demo is the Azure Bicep version of [Jeff Hollan's gRPC Sample Python App](https://github.com/jeffhollan/grpc-sample-python) for Azure Container Apps. 
+This demo is the Azure Bicep version of [Jeff Hollan's gRPC Sample Python App](https://github.com/jeffhollan/grpc-sample-python) for Azure Container Apps. 
 
-* This is a sample of a gRPC client calling another container running a gRPC server to execute a `SayHello` call.
+This is a sample of a gRPC client calling another container running a gRPC server to execute a `SayHello` call.
 
-* To simplify the deployment experience, there are abstracted Azure Bicep files located in the `./modules` folder within this repo.
+To simplify the deployment experience, there are abstracted Azure Bicep files located in the `./modules` folder within this repo.
 
 ### Requirements
 
@@ -41,7 +41,7 @@ Register the `Microsoft.Web` Namespace
     az provider register --namespace Microsoft.Web
 ```
 
-Now we can deploy the app, as well as all required resources by simply running the `deploy.sh` script for bash / zsh. 
+Now we can deploy the app, as well as all required resources, by simply running the `deploy.sh` script for bash / zsh. 
 
 This script takes the following optional arguments:
 
