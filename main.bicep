@@ -15,16 +15,6 @@ param rgName string
 ])
 param location string
 
-// Container App Name
-@description('Container App Name')
-@minLength(4)
-@maxLength(64)
-param name string
-
-@secure()
-param mysqlRootPassword string
-param mysqlPassword string 
-
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: rgName
   location: location
@@ -34,7 +24,7 @@ module logAnalytics 'modules/createLogAnalytics.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'logAnalyticsWorkspace'
   params: {
-    name: name
+    name: 'aca-logs'
   }
 }
 
@@ -42,72 +32,46 @@ module containerAppEnv 'modules/createContainerAppEnv.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'containerAppEnv'
   params: {
-    name: name
+    name: 'aca-env'
     workspaceClientId: logAnalytics.outputs.clientId
     workspaceClientSecret: logAnalytics.outputs.clientSecret
   }
 }
 
-module mysql 'modules/createContainerApp.bicep' = {
+module grpcBackend 'modules/createContainerApp.bicep' = {
   scope: resourceGroup(rg.name)
-  name: 'mysql'
+  name: 'grpc-backend'
   params: {
-    name: 'mysql'
-    containerImage: 'mysql:5.7'
+    name: 'grpc-backend'
+    containerImage: 'ghcr.io/jeffhollan/grpc-sample-python/grpc-backend:main'
     containerAppEnvironmentId: containerAppEnv.outputs.id
-    containerPort: 3306
+    containerPort: 50051
     useExternalIngress: false
+    transportMethod: 'http2'
+    environmentVariables: []
+  }
+}
+
+module httpsFrontend 'modules/createContainerApp.bicep' = {
+  scope: resourceGroup(rg.name)
+  name: 'https-frontend'
+  params: {
+    name: 'https-frontend'
+    containerImage: 'ghcr.io/jeffhollan/grpc-sample-python/https-frontend:main'
+    containerAppEnvironmentId: containerAppEnv.outputs.id
+    containerPort: 8050
+    useExternalIngress: true
     environmentVariables: [
       {
-        name: 'MYSQL_ROOT_PASSWORD'
-        value: mysqlRootPassword
+        name: 'GRPC_SERVER_ADDRESS'
+        value: '${grpcBackend.outputs.fqdn}:443'
       }
       {
-        name: 'MYSQL_DATABASE'
-        value: 'ghost'
-      }
-      {
-        name: 'MYSQL_USER'
-        value: 'ghost'
-      }
-      {
-        name: 'MYSQL_PASSWORD'
-        value: mysqlPassword
+        name: 'GRPC_DNS_RESOLVER'
+        value: 'native'
       }
     ]
   }
 }
 
-module ghost 'modules/createContainerApp.bicep' = {
-  scope: resourceGroup(rg.name)
-  name: 'ghost'
-  params: {
-    name: 'ghost'
-    containerImage: 'jldeen/ghost:latest'
-    containerAppEnvironmentId: containerAppEnv.outputs.id
-    containerPort: 2368
-    useExternalIngress: true
-    environmentVariables: [
-      {
-        name: 'database__client'
-        value: 'mysql'
-      }
-      {
-        name: 'database__connection__host'
-        value: 'mysql'
-      }
-      {
-        name: 'database__connection__user'
-        value: 'ghost'
-      }
-      {
-        name: 'database__connection__password'
-        value: mysqlPassword
-      }
-      {
-        name: 'database__connection__database'
-        value: 'ghost'
-      }
-    ]
-  }
-}
+output httpsFrontendFQDN string = httpsFrontend.outputs.fqdn
