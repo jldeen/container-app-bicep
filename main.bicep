@@ -21,10 +21,6 @@ param location string
 @maxLength(64)
 param name string
 
-@secure()
-param mysqlRootPassword string
-param mysqlPassword string 
-
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: rgName
   location: location
@@ -48,36 +44,6 @@ module containerAppEnv 'modules/createContainerAppEnv.bicep' = {
   }
 }
 
-module mysql 'modules/createContainerApp.bicep' = {
-  scope: resourceGroup(rg.name)
-  name: 'mysql'
-  params: {
-    name: 'mysql'
-    containerImage: 'mysql:5.7'
-    containerAppEnvironmentId: containerAppEnv.outputs.id
-    containerPort: 3306
-    useExternalIngress: false
-    environmentVariables: [
-      {
-        name: 'MYSQL_ROOT_PASSWORD'
-        value: mysqlRootPassword
-      }
-      {
-        name: 'MYSQL_DATABASE'
-        value: 'ghost'
-      }
-      {
-        name: 'MYSQL_USER'
-        value: 'ghost'
-      }
-      {
-        name: 'MYSQL_PASSWORD'
-        value: mysqlPassword
-      }
-    ]
-  }
-}
-
 module ghost 'modules/createContainerApp.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'ghost'
@@ -89,25 +55,11 @@ module ghost 'modules/createContainerApp.bicep' = {
     useExternalIngress: true
     environmentVariables: [
       {
-        name: 'database__client'
-        value: 'mysql'
-      }
-      {
-        name: 'database__connection__host'
-        value: 'mysql'
-      }
-      {
-        name: 'database__connection__user'
-        value: 'ghost'
-      }
-      {
-        name: 'database__connection__password'
-        value: mysqlPassword
-      }
-      {
-        name: 'database__connection__database'
-        value: 'ghost'
+        name: 'url'
+        value: 'http://localhost:2368'
       }
     ]
   }
 }
+
+output ghostFQDN string = ghost.outputs.fqdn

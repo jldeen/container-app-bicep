@@ -41,26 +41,8 @@ function getLatestK8s {
    echo $latestVersion
 }
 
-# The name of the resource group to be created. All resources will be place in
-# the resource group and start with name.
-rgName=$1
-rgName=${rgName:-ghostDemo}
-
-# The location to store the meta data for the deployment.
-location=$2
-location=${location:-eastus}
-
-# Container App Deployment Name
-name=$3
-name=${name:-ghostDemo}
-
-# mysql root password
-rootPassword=$4
-rootPassword=${rootPassword:-R00tP@ssW012d}
-
-# mysql password
-mysqlPassword=$5
-mysqlPassword=${mysqlPassword:-MySq1P@ssw012D}
+# Get RG name, location, and App Name
+source env.sh
 
 # Deploy the infrastructure
 az deployment sub create --name $rgName \
@@ -69,17 +51,9 @@ az deployment sub create --name $rgName \
    --parameters rgName=$rgName \
    --parameters location=$location \
    --parameters name=$name \
-   --parameters mysqlRootPassword=$rootPassword \
-   --parameters mysqlPassword=$mysqlPassword \
    --output none
 
-# # Get all the outputs
-# aksName=$(getOutput 'aksName')
-# storageAccountKey=$(getOutput 'storageAccountKey')
-# serviceBusEndpoint=$(getOutput 'serviceBusEndpoint')
-# storageAccountName=$(getOutput 'storageAccountName')
-# cognitiveServiceKey=$(getOutput 'cognitiveServiceKey')
-# cognitiveServiceEndpoint=$(getOutput 'cognitiveServiceEndpoint')
+# Get outputs
+ghostFQDN=$(getOutput 'ghostFQDN')
 
-# printf "\nYour app is accessible from http://%s\n" $viewerIp
-# printf "Zipkin is accessible from http://%s\n\n" $zipkinIp
+printf "\nYour app is accessible from http://%s\n" $ghostFQDN
