@@ -1,6 +1,8 @@
 name: Ghost Deploy Azure Container Apps
 
 on:
+  push:
+    branches: [ ghost ]
   workflow_dispatch:
 
 env:
