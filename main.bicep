@@ -61,7 +61,6 @@ module database 'modules/createAzureDatabase.bicep' = {
     mySQLServerSku: 'B_Gen5_1'
     administratorLogin: administratorLogin
     administratorPassword: administratorPassword
-    mySQLServerName: 'ghost-sql-server'
   }
 }
 
@@ -79,7 +78,17 @@ module ghost 'modules/createContainerApp.bicep' = {
     containerPort: 2368
     useExternalIngress: true
     transportMethod: 'http'
+    secrets: [
+      {
+        name: 'database-password'
+        value: administratorPassword
+      }
+    ]
     environmentVariables: [
+      {
+        name: 'url'
+        value: 'http://${name}-fd.azurefd.net'
+      }
       {
         name: 'database__client'
         value: 'mysql'
@@ -94,15 +103,11 @@ module ghost 'modules/createContainerApp.bicep' = {
       }
       {
         name: 'database__connection__password'
-        value: administratorPassword
+        secretref: 'database-password'
       }
       {
         name: 'database__connection__database'
         value: 'ghost'
-      }
-      {
-        name: 'url'
-        value: 'http://${name}-fd.azurefd.net'
       }
       {
         name: 'database__connection__ssl'

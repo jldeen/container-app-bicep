@@ -1,7 +1,3 @@
-@minLength(3)
-@maxLength(63)
-param mySQLServerName string
-
 @allowed([
   'B_Gen5_1'
   'B_Gen5_2'
@@ -24,8 +20,10 @@ param location string = resourceGroup().location
 @description('Log Analytics workspace id to use for diagnostics settings')
 param workspaceId string
 
+var mysqlServerName = 'ghost-mysql-${uniqueString(resourceGroup().id)}'
+
 resource mySQLServer 'Microsoft.DBforMySQL/servers@2017-12-01' = {
-  name: mySQLServerName
+  name: mysqlServerName
   location: location
   sku: {
     name: mySQLServerSku

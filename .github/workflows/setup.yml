@@ -1,0 +1,44 @@
+name: Ghost Deploy Azure Container Apps
+
+on:
+  workflow_dispatch:
+
+env:
+  # The name of the resource group to be created. All resources will be place
+  # in the resource group and start with name.
+  rgName: "GhostDemo"
+
+  # The location to store the meta data for the deployment.
+  location: "eastus"
+
+  # Container App Name
+  name: "GhostDemo"
+
+  # MySQL Admin Login
+  administratorLogin: "GhostAdmin"
+
+jobs:
+  buildImage:
+    name: build provider image
+    runs-on: ubuntu-latest
+    steps:
+    # checkout branch
+    - name: checkout main branch
+      uses: actions/checkout@v2
+
+    # log into Azure
+    - name: "Login via Azure CLI"
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+  # Deploy Infra
+    - name: deploy
+      uses: azure/arm-deploy@v1
+      with:
+        scope: subscription
+        resourceGroupName: ${{ env.rgName }}
+        region: eastus
+        template: ./main.bicep
+        parameters: location=${{ env.location }} rgName=${{ env.rgName }} name=${{ env.name }} administratorLogin=${{ env.administratorLogin }} administratorPassword=${{ secrets.administratorPassword }} 
+        failOnStdErr: false

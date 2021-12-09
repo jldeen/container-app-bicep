@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.4.1008.15138",
-      "templateHash": "9282311952883939822"
+      "templateHash": "8757722425622873825"
     }
   },
   "parameters": {
@@ -227,9 +227,6 @@
           },
           "administratorPassword": {
             "value": "[parameters('administratorPassword')]"
-          },
-          "mySQLServerName": {
-            "value": "ghost-sql-server"
           }
         },
         "template": {
@@ -239,15 +236,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.4.1008.15138",
-              "templateHash": "6680778202759526962"
+              "templateHash": "15016152307179027527"
             }
           },
           "parameters": {
-            "mySQLServerName": {
-              "type": "string",
-              "maxLength": 63,
-              "minLength": 3
-            },
             "mySQLServerSku": {
               "type": "string",
               "allowedValues": [
@@ -285,11 +277,14 @@
             }
           },
           "functions": [],
+          "variables": {
+            "mysqlServerName": "[format('ghost-mysql-{0}', uniqueString(resourceGroup().id))]"
+          },
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/servers",
               "apiVersion": "2017-12-01",
-              "name": "[parameters('mySQLServerName')]",
+              "name": "[variables('mysqlServerName')]",
               "location": "[parameters('location')]",
               "sku": {
                 "name": "[parameters('mySQLServerSku')]",
@@ -307,19 +302,19 @@
             {
               "type": "Microsoft.DBforMySQL/servers/firewallRules",
               "apiVersion": "2017-12-01",
-              "name": "[format('{0}/{1}', parameters('mySQLServerName'), 'AllowAzureIPs')]",
+              "name": "[format('{0}/{1}', variables('mysqlServerName'), 'AllowAzureIPs')]",
               "properties": {
                 "startIpAddress": "0.0.0.0",
                 "endIpAddress": "0.0.0.0"
               },
               "dependsOn": [
-                "[resourceId('Microsoft.DBforMySQL/servers', parameters('mySQLServerName'))]"
+                "[resourceId('Microsoft.DBforMySQL/servers', variables('mysqlServerName'))]"
               ]
             },
             {
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.DBforMySQL/servers/{0}', parameters('mySQLServerName'))]",
+              "scope": "[format('Microsoft.DBforMySQL/servers/{0}', variables('mysqlServerName'))]",
               "name": "MySQLServerDiagnostics",
               "properties": {
                 "workspaceId": "[parameters('workspaceId')]",
@@ -341,18 +336,18 @@
                 ]
               },
               "dependsOn": [
-                "[resourceId('Microsoft.DBforMySQL/servers', parameters('mySQLServerName'))]"
+                "[resourceId('Microsoft.DBforMySQL/servers', variables('mysqlServerName'))]"
               ]
             }
           ],
           "outputs": {
             "name": {
               "type": "string",
-              "value": "[parameters('mySQLServerName')]"
+              "value": "[variables('mysqlServerName')]"
             },
             "fqdn": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.DBforMySQL/servers', parameters('mySQLServerName'))).fullyQualifiedDomainName]"
+              "value": "[reference(resourceId('Microsoft.DBforMySQL/servers', variables('mysqlServerName'))).fullyQualifiedDomainName]"
             }
           }
         }
@@ -391,8 +386,20 @@
           "transportMethod": {
             "value": "http"
           },
+          "secrets": {
+            "value": [
+              {
+                "name": "database-password",
+                "value": "[parameters('administratorPassword')]"
+              }
+            ]
+          },
           "environmentVariables": {
             "value": [
+              {
+                "name": "url",
+                "value": "[format('http://{0}-fd.azurefd.net', parameters('name'))]"
+              },
               {
                 "name": "database__client",
                 "value": "mysql"
@@ -407,15 +414,11 @@
               },
               {
                 "name": "database__connection__password",
-                "value": "[parameters('administratorPassword')]"
+                "secretref": "database-password"
               },
               {
                 "name": "database__connection__database",
                 "value": "ghost"
-              },
-              {
-                "name": "url",
-                "value": "[format('http://{0}-fd.azurefd.net', parameters('name'))]"
               },
               {
                 "name": "database__connection__ssl",
@@ -435,7 +438,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.4.1008.15138",
-              "templateHash": "17341899929223101997"
+              "templateHash": "6281916629502145919"
             }
           },
           "parameters": {
@@ -483,6 +486,10 @@
                 "description": "Transport type for Ingress"
               }
             },
+            "secrets": {
+              "type": "array",
+              "defaultValue": []
+            },
             "environmentVariables": {
               "type": "array",
               "defaultValue": []
@@ -499,7 +506,7 @@
               "properties": {
                 "kubeEnvironmentId": "[parameters('containerAppEnvironmentId')]",
                 "configuration": {
-                  "secrets": [],
+                  "secrets": "[parameters('secrets')]",
                   "registries": [],
                   "ingress": {
                     "external": "[parameters('useExternalIngress')]",

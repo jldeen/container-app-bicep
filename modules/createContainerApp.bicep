@@ -28,6 +28,7 @@ param transportMethod string = 'auto'
 // @secure()
 // param registryPassword string
 
+param secrets array = []
 param environmentVariables array = []
 
 resource containerApp 'Microsoft.Web/containerApps@2021-03-01' = {
@@ -37,8 +38,7 @@ resource containerApp 'Microsoft.Web/containerApps@2021-03-01' = {
   properties: {
     kubeEnvironmentId: containerAppEnvironmentId
     configuration: {
-      secrets: [
-      ]    
+      secrets: secrets   
       registries: [
       ]
       ingress: {
