@@ -101,7 +101,7 @@ module ghost 'modules/createContainerApp.bicep' = {
       }
       {
         name: 'url'
-        value: 'https://${name}-fd.azurefd.net'
+        value: 'http://${name}-fd.azurefd.net'
       }
       {
         name: 'database__connection__ssl'
