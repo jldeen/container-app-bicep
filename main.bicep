@@ -115,4 +115,16 @@ module ghost 'modules/createContainerApp.bicep' = {
   }
 }
 
+// module frontdoor 'modules/createFrontdoor.bicep' = {
+//   scope: resourceGroup(rg.name)
+//   name: 'frontdoor' 
+//   params: {
+//     containerAppName: ghost.outputs.name
+//     fdName: '${name}-fd'
+//     logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
+//     wafPolicyName: '${name}waf'
+//   }
+// }
+
+// output frontdoorFQDN string = frontdoor.outputs.hostname
 output ghostFQDN string = ghost.outputs.fqdn
