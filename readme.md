@@ -89,11 +89,11 @@ After the script completes, you will see output similar to the following:
 
 Simply click the link provided from the script to access the Ghost instance now running in Azure Container Apps. A successful deployment will provide the following in your browser:
 
-![ACA Successful Ghost Example]()
+![ACA Successful Ghost Example](./images/aca_success_browser_example.png)
 
 If you navigate to your Azure Portal, and to your created resource group, you will see resources similar to this:
 
-![Azure Portal Example]()
+![Azure Portal Example](./images/aca_portal_ghost_example.png)
 
 ## Debugging Info | Accessing the Azure Container App Logs via Log Analytics
 
