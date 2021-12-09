@@ -8,16 +8,16 @@ on:
 env:
   # The name of the resource group to be created. All resources will be place
   # in the resource group and start with name.
-  rgName: "GhostDemo"
+  rgName: "ghostDemo"
 
   # The location to store the meta data for the deployment.
   location: "eastus"
 
   # Container App Name
-  name: "GhostDemo"
+  name: "ghostDemo"
 
   # MySQL Admin Login
-  administratorLogin: "GhostAdmin"
+  administratorLogin: "ghostadmin"
 
 jobs:
   deployGhostinAzure:
