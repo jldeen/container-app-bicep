@@ -121,6 +121,8 @@ Both the `./deploy.sh` and the `./debug.sh` script source the same `.env.sh` env
 | createContainerApp.bicep | Creates Azure Container App Resource |
 | createContainerAppEnv.bicep | Creates Azure Container App Environment Resource |
 | createLogAnalytics.bicep | Creates Log Analytics Resource |
+| createAzureDatabase.bicep | Creates Azure Database for MySQL Resource |
+| createFrontdoor.bicep | Creates Azure Front Door with Firewall Policy Resources |
 
 To deploy the 3 modules with the sample code from Jeff's repo, you will use the `main.bicep` file with the following parameters:
 
