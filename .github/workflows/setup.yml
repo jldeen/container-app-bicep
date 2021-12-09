@@ -20,8 +20,8 @@ env:
   administratorLogin: "GhostAdmin"
 
 jobs:
-  buildImage:
-    name: build provider image
+  deployGhostinAzure:
+    name: "Deply Ghost in Azure Container Apps"
     runs-on: ubuntu-latest
     steps:
     # checkout branch
