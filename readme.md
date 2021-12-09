@@ -2,6 +2,8 @@
 
 One click [Ghost blog]() deployment using Azure Container Apps, Azure Database, Azure Frontdoor, and Azure Keyvault.
 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjldeen%2Fcontainer-app-bicep%2Fghost%2Fmain.json)
+
 <!-- ## Objectives 
 
 This demo is the Azure Bicep version of [Jeff Hollan's gRPC Sample Python App](https://github.com/jeffhollan/grpc-sample-python) for Azure Container Apps. 
