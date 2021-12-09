@@ -59,4 +59,4 @@ az deployment sub create --name $rgName \
 ghostFQDN=$(getOutput 'ghostFQDN')
 frontDoor=$(getOutput 'frontdoorFQDN')
 
-printf "\nYour app is accessible from http://%s\n" $frontDoor
+printf "\nYour app is accessible from https://%s\n" $frontDoor
