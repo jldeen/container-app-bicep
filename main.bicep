@@ -101,7 +101,7 @@ module ghost 'modules/createContainerApp.bicep' = {
       }
       {
         name: 'url'
-        value: 'http://localhost:2368'
+        value: 'https://${name}-fd.azurefd.net'
       }
       {
         name: 'database__connection__ssl'
@@ -115,16 +115,16 @@ module ghost 'modules/createContainerApp.bicep' = {
   }
 }
 
-// module frontdoor 'modules/createFrontdoor.bicep' = {
-//   scope: resourceGroup(rg.name)
-//   name: 'frontdoor' 
-//   params: {
-//     containerAppName: ghost.outputs.name
-//     fdName: '${name}-fd'
-//     logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
-//     wafPolicyName: '${name}waf'
-//   }
-// }
+module frontdoor 'modules/createFrontdoor.bicep' = {
+  scope: resourceGroup(rg.name)
+  name: 'frontdoor' 
+  params: {
+    containerAppName: ghost.outputs.name
+    fdName: '${name}-fd'
+    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
+    wafPolicyName: '${name}waf'
+  }
+}
 
-// output frontdoorFQDN string = frontdoor.outputs.hostname
+output frontdoorFQDN string = frontdoor.outputs.hostname
 output ghostFQDN string = ghost.outputs.fqdn
