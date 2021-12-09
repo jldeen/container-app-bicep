@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.4.1008.15138",
-      "templateHash": "13442743926232695487"
+      "templateHash": "9282311952883939822"
     }
   },
   "parameters": {
@@ -37,13 +37,13 @@
       }
     },
     "administratorLogin": {
-      "type": "secureString",
+      "type": "string",
       "metadata": {
         "description": "Azure Database Admin login"
       }
     },
     "administratorPassword": {
-      "type": "string"
+      "type": "secureString"
     }
   },
   "functions": [],

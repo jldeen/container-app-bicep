@@ -22,8 +22,9 @@ param location string
 param name string
 
 @description('Azure Database Admin login')
-@secure()
 param administratorLogin string
+
+@secure()
 param administratorPassword string
 
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
