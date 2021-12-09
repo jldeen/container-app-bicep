@@ -140,7 +140,7 @@ To deploy the 3 modules with the sample code from Jeff's repo, you will use the 
 |--------|--------|
 | containerImage | Container Image for Azure Container App |
 | containerPort | The port your container listens to for incoming requests. Your application ingress endpoint is always exposed on port 443  |
-| mySQLServerSku | Skue for MySQL Server. Options include `B_Gen5_1` or `B_Gen5_2` |
+| mySQLServerSku | Sku for MySQL Server. Options include `B_Gen5_1` or `B_Gen5_2` |
 | useExternalIngress | Set whether you want your ingress visible externally, or internally within a VNET |
 | transportMethod | Transport type for Ingress. Options include `auto` `http` or `http2` |
 | environmentVariables | Environment Variables needed for your container apps |
