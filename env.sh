@@ -15,3 +15,11 @@ location=${location:-eastus}
 # Container App Deployment Name
 name=$4
 name=${name:-ghostDemo}
+
+# MySQL Admin Name
+administratorLogin=$5
+administratorLogin=${administratorLogin:-ghostadmin}
+
+# MySQL password
+administratorPassword=$6
+administratorPassword=${administratorPassword:-P@ssw012d!}

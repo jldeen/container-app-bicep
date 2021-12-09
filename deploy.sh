@@ -51,6 +51,8 @@ az deployment sub create --name $rgName \
    --parameters rgName=$rgName \
    --parameters location=$location \
    --parameters name=$name \
+   --parameters administratorLogin=$administratorLogin \
+   --parameters administratorPassword=$administratorPassword \
    --output none
 
 # Get outputs

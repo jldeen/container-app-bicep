@@ -21,6 +21,11 @@ param location string
 @maxLength(64)
 param name string
 
+@description('Azure Database Admin login')
+@secure()
+param administratorLogin string
+param administratorPassword string
+
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: rgName
   location: location
@@ -37,6 +42,9 @@ module logAnalytics 'modules/createLogAnalytics.bicep' = {
 module containerAppEnv 'modules/createContainerAppEnv.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'containerAppEnv'
+  dependsOn:[
+    logAnalytics
+  ]
   params: {
     name: name
     workspaceClientId: logAnalytics.outputs.clientId
@@ -44,19 +52,64 @@ module containerAppEnv 'modules/createContainerAppEnv.bicep' = {
   }
 }
 
+module database 'modules/createAzureDatabase.bicep' = {
+  scope: resourceGroup(rg.name)
+  name: 'database'
+  params: {
+    workspaceId: logAnalytics.outputs.workspaceId
+    mySQLServerSku: 'B_Gen5_1'
+    administratorLogin: administratorLogin
+    administratorPassword: administratorPassword
+    mySQLServerName: 'ghost-sql-server'
+  }
+}
+
 module ghost 'modules/createContainerApp.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'ghost'
+  dependsOn: [
+    database
+    containerAppEnv
+  ]
   params: {
     name: 'ghost'
     containerImage: 'jldeen/ghost:latest'
     containerAppEnvironmentId: containerAppEnv.outputs.id
     containerPort: 2368
     useExternalIngress: true
+    transportMethod: 'http'
     environmentVariables: [
+      {
+        name: 'database__client'
+        value: 'mysql'
+      }
+      {
+        name: 'database__connection__host'
+        value: database.outputs.fqdn
+      }
+      {
+        name: 'database__connection__user'
+        value: '${administratorLogin}@${database.outputs.name}'
+      }
+      {
+        name: 'database__connection__password'
+        value: administratorPassword
+      }
+      {
+        name: 'database__connection__database'
+        value: 'ghost'
+      }
       {
         name: 'url'
         value: 'http://localhost:2368'
+      }
+      {
+        name: 'database__connection__ssl'
+        value: 'true'
+      }
+      {
+        name: 'database__connection__ssl_minVersion'
+        value: 'TLSv1.2'
       }
     ]
   }

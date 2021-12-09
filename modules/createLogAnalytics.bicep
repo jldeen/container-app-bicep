@@ -14,5 +14,7 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2020-03-01-preview'
     }
   })
 }
+
+output workspaceId string = workspace.id
 output clientId string = workspace.properties.customerId
 output clientSecret string = workspace.listKeys().primarySharedKey
